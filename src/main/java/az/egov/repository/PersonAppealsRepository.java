@@ -28,4 +28,6 @@ public interface PersonAppealsRepository extends CrudRepository<PersonAppeals, B
             nativeQuery = true)
     public List<Object[]> getPersonAppeals(@Param("offset") Integer offset ,
                                                      @Param("fetch")  Integer fetch) ;
+
+
 }
