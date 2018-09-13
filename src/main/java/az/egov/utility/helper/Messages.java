@@ -5,7 +5,10 @@ package az.egov.utility.helper;
  */
 public enum Messages {
 
-    TOKEN_NOT_FOUND("Token's value not found in the request parameter") ;
+    TOKEN_NOT_FOUND("Token's value not found in the request parameter") ,
+    FAILED_CONTENT("Operation failed. Reason : ") ,
+    NODATA_CONTENT("No data found for given parameters") ,
+    SUCCES_CONTENT("Operation succesfully ended") ;
 
     private String messageContent ;
 

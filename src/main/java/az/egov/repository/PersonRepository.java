@@ -24,7 +24,7 @@ public interface PersonRepository extends CrudRepository<Persons,Object> {
     public List<Persons> getPersonList(@Param("offset") Integer offset ,
                                        @Param("fetch")  Integer fetch) ;
 
-
+    public Persons findByPin(String pin) ;
 }
 
 

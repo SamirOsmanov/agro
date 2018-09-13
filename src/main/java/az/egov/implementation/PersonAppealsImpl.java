@@ -32,8 +32,8 @@ public class PersonAppealsImpl implements PersonAppealsService {
     @Autowired
     PersonAppealsRepository appealsRepository ;
 
-    @Autowired
-    PersonRepository personRepository ;
+    /*@Autowired
+    PersonRepository personRepository ;*/
 
 
     @PersistenceContext
@@ -82,17 +82,24 @@ public class PersonAppealsImpl implements PersonAppealsService {
 
 
     @Override
-    public void save(PersonAppeals entity) {
-        appealsRepository.save(entity) ;
+    public PersonAppeals save(PersonAppeals entity) {
+        return appealsRepository.save(entity) ;
     }
 
     @Override
-    public void update(PersonAppeals entity) {
+    public PersonAppeals update(PersonAppeals entity) {
+       PersonAppeals findedAppeal = appealsRepository.findById(entity.getId()).get() ;
 
+       findedAppeal.setAppealTypes(entity.getAppealTypes());
+       findedAppeal.setApplicationNumber(entity.getApplicationNumber());
+       findedAppeal.setLatitude(entity.getLatitude());
+       findedAppeal.setLongitude(entity.getLongitude());
+       findedAppeal.setMessage(entity.getMessage());
+       findedAppeal.setNote(entity.getNote());
+       findedAppeal.setSort(entity.getSort());
+       findedAppeal.setLabel(entity.getLabel());
+
+       return em.merge(findedAppeal) ;
     }
 
-    @Override
-    public PersonAppeals findById(Object id) {
-         return null ;
-    }
 }

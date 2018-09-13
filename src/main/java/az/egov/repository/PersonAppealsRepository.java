@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 /**
  * Created by admin on 03.09.2018.
  */
+@Transactional
 @Repository
 public interface PersonAppealsRepository extends CrudRepository<PersonAppeals, BigInteger> {
 
@@ -27,7 +29,7 @@ public interface PersonAppealsRepository extends CrudRepository<PersonAppeals, B
                    " ORDER BY c.id DESC OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY" ,
             nativeQuery = true)
     public List<Object[]> getPersonAppeals(@Param("offset") Integer offset ,
-                                                     @Param("fetch")  Integer fetch) ;
+                                           @Param("fetch")  Integer fetch) ;
 
 
 }

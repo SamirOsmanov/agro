@@ -22,8 +22,7 @@ public class Persons {
     @Column( columnDefinition="uniqueidentifier")
     private String id ;
 
-    @Column(name = "ID_SOGGETTO")
-    private Integer idSoggetto ;
+
 
     @Column(length = 7)
     private String pin ;
@@ -49,11 +48,11 @@ public class Persons {
     @Column(length = 20)
     private String phone ;
 
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @Column(name = "voen_created_date")
     private Date voenCreatedDate ;
 
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @Column(name = "voen_expired_date")
     private Date voenExpiredDate ;
 
@@ -74,7 +73,7 @@ public class Persons {
     /*@Column(name = "create_user_id")
     private Integer createUserId ;*/
 
-    @Temporal(TemporalType.DATE)
+   // @Temporal(TemporalType.DATE)
     @Column(name = "create_date")
     private Date createDate ;
 
@@ -82,6 +81,11 @@ public class Persons {
     private Integer statusId ;*/
 
     // add transaction id
+
+
+
+    public Persons() {
+    }
 
     public Persons(String id)
     {
@@ -96,13 +100,7 @@ public class Persons {
         this.id = id;
     }
 
-    public Integer getIdSoggetto() {
-        return idSoggetto;
-    }
 
-    public void setIdSoggetto(Integer idSoggetto) {
-        this.idSoggetto = idSoggetto;
-    }
 
     public String getPhone() {
         return phone;
@@ -244,5 +242,24 @@ public class Persons {
         this.createDate = createDate;
     }
 
-
+    @Override
+    public String toString() {
+        return "\n Person{" +
+                " \npin='" + pin + '\'' +
+                ",\n firstName='" + firstName + '\'' +
+                ",\n lastName='" + lastName + '\'' +
+                ",\n fatherName='" + fatherName + '\'' +
+                ",\n ssn='" + ssn + '\'' +
+                ",\n organizationName='" + organizationName + '\'' +
+                ",\n voen='" + voen + '\'' +
+                ",\n phone='" + phone + '\'' +
+                ",\n voenCreatedDate=" + voenCreatedDate +
+                ",\n voenExpiredDate=" + voenExpiredDate +
+                ",\n note='" + note + '\'' +
+                ",\n isRegistered=" + isRegistered +
+                ",\n isArchived=" + isArchived +
+                ",\n sort=" + sort +
+                ",\n label='" + label + '\'' +
+                "} \n";
+    }
 }

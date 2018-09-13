@@ -2,7 +2,9 @@ package az.egov.implementation;
 
 import az.egov.entity.PersonAppeals;
 import az.egov.entity.Persons;
+import az.egov.repository.Log4MongoRepository;
 import az.egov.repository.PersonRepository;
+import az.egov.response.ResponseEntity;
 import az.egov.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,25 +26,38 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     PersonRepository personRepository ;
 
+    @Autowired
+    private Log4MongoRepository mongoRepository ;
+
     @PersistenceContext
     EntityManager em ;
 
     @Override
     public List<Persons> getPersonList(int offset, int fetch)
     {
+
         return  personRepository.getPersonList(offset,fetch) ;
     }
 
-
+    @Override
+    public long totalPersonCount() {
+        return personRepository.count() ;
+    }
 
     @Override
-    public void save(Persons entity) {
-        System.out.println(personRepository.save(entity).getId());
+    public Persons findByPin(String pin) {
+        return personRepository.findByPin(pin) ;
     }
 
 
     @Override
-    public void update(Persons entity) {
+    public Persons save(Persons entity) {
+        return personRepository.save(entity)  ;
+    }
+
+
+    @Override
+    public Persons update(Persons entity) {
 
         Persons findedPerson = personRepository.findById(entity.getId()).get() ;
 
@@ -52,7 +67,8 @@ public class PersonServiceImpl implements PersonService {
         findedPerson.setCreateDate(entity.getCreateDate());
         findedPerson.setLabel(entity.getLabel());
 
-        em.merge(findedPerson) ;
+
+        return em.merge(findedPerson) ;
     }
 
     @Override

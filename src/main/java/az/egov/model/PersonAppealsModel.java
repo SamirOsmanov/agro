@@ -52,4 +52,20 @@ public class PersonAppealsModel {
         this.id = id;
         this.createDate = createDate;
     }
+
+    @Override
+    public String toString() {
+        return "PersonAppealsModel{" +
+                "createDate=" + createDate +
+                ", personId='" + personId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", fatherName='" + fatherName + '\'' +
+                ", message='" + message + '\'' +
+                ", requestId=" + requestId +
+                ", requestName='" + requestName + '\'' +
+                ", appealId=" + appealId +
+                ", appealName='" + appealName + '\'' +
+                '}';
+    }
 }

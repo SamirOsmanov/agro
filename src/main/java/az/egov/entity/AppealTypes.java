@@ -20,9 +20,24 @@ public class AppealTypes {
     @Column
     private String name ;
 
+    @Column
+    private String label ;
+
+    @Column(name = "status_id")
+    private Integer statusId ;
+
+    public AppealTypes() {
+    }
+
     public AppealTypes(Integer id)
     {
         this.id = id ;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "request_type_id")
+    private RequestTypes requestTypes ;
+
+
 
 }
