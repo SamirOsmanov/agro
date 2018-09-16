@@ -12,7 +12,7 @@ import java.math.BigInteger;
  */
 
 @RestController
-@RequestMapping("/agroculture/notification")
+@RequestMapping("/api/notification")
 public class NotificationController {
 
 

@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by admin on 10.09.2018.
  */
 @RestController
-@RequestMapping("/agroculture/news")
+@RequestMapping("/api/news")
 public class NewsController {
 
     @Autowired

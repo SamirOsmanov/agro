@@ -14,5 +14,6 @@ import java.util.List;
 public interface AppealTypeService extends CRUDService<AppealTypes> {
 
     public List<AppealTypes> extendedSearch(Integer statusId,
-                                            Integer requestTypeId);
+                                            Integer requestTypeId,
+                                            Integer parentId);
 }

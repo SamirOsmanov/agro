@@ -31,7 +31,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                    .select()
                    .apis(RequestHandlerSelectors.basePackage("az.egov.controller"))
-                   .paths(regex("/agroculture.*"))
+                   .paths(regex("/api.*"))
                    .build()
                    .apiInfo(metaData());
 

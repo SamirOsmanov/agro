@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -19,9 +20,12 @@ import java.util.Date;
  * Created by admin on 03.09.2018.
  */
 
-/*@Aspect
-@Configuration*/
+@Aspect
+@Configuration
 public class CheckTokenAspect {
+
+    @Value("${agro.user.token}")
+    private String TOKEN_VALUE ;
 
     @Pointcut("execution(* az.egov.controller.*.*(..))")
     public void http() {}
@@ -30,11 +34,13 @@ public class CheckTokenAspect {
     public void checkRequestHeaderParams()
     {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String token = request.getHeader("token") ;
+        String userToken = request.getHeader("token") ;
 
-        if(token == null)
+        if(userToken == null)
         {
            throw new TokenNotFoundException(Messages.TOKEN_NOT_FOUND.getMessageContent()) ;
+        } else if (!userToken.equals(TOKEN_VALUE)) {
+           throw new TokenNotFoundException(Messages.INVALID_TOKEN.getMessageContent()) ;
         }
     }
 

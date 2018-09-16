@@ -23,7 +23,6 @@ public class Persons {
     private String id ;
 
 
-
     @Column(length = 7)
     private String pin ;
 
@@ -59,29 +58,11 @@ public class Persons {
     @Column
     private String note ;
 
-    @Column(name = "is_registered")
-    private boolean isRegistered ;
-
-    @Column(name = "is_archived")
-    private boolean isArchived ;
-
-    private Integer sort ;
-
-    @Column(length = 50)
+    @Column
     private String label ;
 
-    /*@Column(name = "create_user_id")
-    private Integer createUserId ;*/
-
-   // @Temporal(TemporalType.DATE)
-    @Column(name = "create_date")
-    private Date createDate ;
-
-    /*@Column(name = "status_id")
-    private Integer statusId ;*/
-
-    // add transaction id
-
+    @Column
+    private  Date createDate ;
 
 
     public Persons() {
@@ -200,29 +181,7 @@ public class Persons {
         this.note = note;
     }
 
-    public boolean isRegistered() {
-        return isRegistered;
-    }
 
-    public void setRegistered(boolean registered) {
-        isRegistered = registered;
-    }
-
-    public boolean isArchived() {
-        return isArchived;
-    }
-
-    public void setArchived(boolean archived) {
-        isArchived = archived;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
 
     public String getLabel() {
         return label;
@@ -256,9 +215,6 @@ public class Persons {
                 ",\n voenCreatedDate=" + voenCreatedDate +
                 ",\n voenExpiredDate=" + voenExpiredDate +
                 ",\n note='" + note + '\'' +
-                ",\n isRegistered=" + isRegistered +
-                ",\n isArchived=" + isArchived +
-                ",\n sort=" + sort +
                 ",\n label='" + label + '\'' +
                 "} \n";
     }

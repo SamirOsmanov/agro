@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  *
  */
 @RestController
-@RequestMapping("/agroculture/appealtypes")
+@RequestMapping("/api/appealtypes")
 public class AppealTypesController {
 
     @Autowired
@@ -20,10 +20,11 @@ public class AppealTypesController {
 
     @GetMapping("/find")
     public Object findByRequestId(@RequestParam(value = "statusId",required = false)      Integer statusId ,
-                                  @RequestParam(value = "requestTypeId",required = true) Integer requestTypeId
+                                  @RequestParam(value = "requestTypeId",required = true) Integer requestTypeId,
+                                  @RequestParam(value = "parentId",required = false) Integer parentId
                                   )
     {
 
-       return appealTypesService.extendedSearch(statusId,requestTypeId) ;
+       return appealTypesService.extendedSearch(statusId,requestTypeId,parentId) ;
     }
 }

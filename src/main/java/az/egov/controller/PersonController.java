@@ -6,20 +6,24 @@ import az.egov.repository.Log4MongoRepository;
 import az.egov.service.PersonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by admin on 03.09.2018.
  */
 
 @RestController
-@RequestMapping("/agroculture/person")
+@RequestMapping("/api/person")
 @Api(value="Person Controller",
      description="Controller for Person related operations")
 public class PersonController {
@@ -29,6 +33,7 @@ public class PersonController {
     PersonService personService ;
 
 
+    private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 
     @GetMapping("/list")
@@ -80,22 +85,53 @@ public class PersonController {
         headers.set("token","1111");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
-        String personVerifierUrl = "http://192.168.112.19:8084/agro/api/person/verify/v1?pin="+pin+"&phone="+phone ;
+        HashMap<String, Object> response = new HashMap<>();
+
+        String personVerifierUrl =  "http://10.255.110.1:8080/agro/api/person/verify/v1?pin="+pin+"&phone="+phone ;
+
+        LOGGER.info("URL : " + personVerifierUrl);
 
 
         try
         {
             exchange = restTemplate.exchange(personVerifierUrl, HttpMethod.GET, entity, Boolean.class);
 
-            if (exchange == null)
-                throw new NullPointerException() ;
+            Boolean body = exchange.getBody();
+
+            if(body != null )
+            {
+                if(body.booleanValue()) {
+                    Persons person = personService.findByPin(pin);
+                    response.put("status", true);
+                    response.put("isRegistered",true) ;
+                    response.put("person", person);
+                }
+                else
+                {
+                    response.put("status", false);
+                    response.put("isRegistered",false) ;
+                }
+            }
+            else
+            {
+                response.put("status",false) ;
+                response.put("isRegistered",false) ;
+            }
+
+
+            LOGGER.info(" BODY : " + exchange.getStatusCode() + ", " + exchange.getBody());
+
         }
-        catch (NullPointerException e)
+        catch (Exception e)
         {
-            exchange = new ResponseEntity<Boolean>(HttpStatus.GATEWAY_TIMEOUT) ;
+            LOGGER.info("EXCEPTION :  " + e.getMessage());
+            response.put("status",false) ;
+            e.printStackTrace();
+
+
         }
         finally {
-            return exchange ;
+            return response ;
         }
     }
 }

@@ -26,6 +26,9 @@ public class AppealTypes {
     @Column(name = "status_id")
     private Integer statusId ;
 
+    @Column(name = "parent_id")
+    private Integer parentId ;
+
     public AppealTypes() {
     }
 

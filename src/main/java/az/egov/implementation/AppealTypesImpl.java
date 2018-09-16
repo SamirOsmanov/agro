@@ -7,6 +7,7 @@ import az.egov.service.AppealTypeService;
 import az.egov.utility.validation.PropertyValidator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,8 @@ public class AppealTypesImpl implements AppealTypeService {
 
     @Override
     public List<AppealTypes> extendedSearch(Integer statusId,
-                                            Integer requestTypeId) {
+                                            Integer requestTypeId,
+                                            Integer parentId) {
 
         Session session = em.unwrap(Session.class) ;
 
@@ -40,6 +42,12 @@ public class AppealTypesImpl implements AppealTypeService {
 
         PropertyValidator.isNull(criteria,"statusId",statusId);
         PropertyValidator.isNull(criteria,"r.id",requestTypeId);
+
+        if(parentId != null)
+          criteria.add(Restrictions.eq("parentId",parentId)) ;
+        else
+          criteria.add(Restrictions.isNull("parentId")) ;
+
 
 
         return criteria.list() ;
