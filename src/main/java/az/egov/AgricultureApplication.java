@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
-public class AgricultureApplication  extends SpringBootServletInitializer { //
+public class AgricultureApplication extends SpringBootServletInitializer { //
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {

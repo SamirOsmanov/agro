@@ -47,6 +47,9 @@ public class Persons {
     @Column(length = 20)
     private String phone ;
 
+    @Column
+    private Integer statusId ;
+
     //@Temporal(TemporalType.DATE)
     @Column(name = "voen_created_date")
     private Date voenCreatedDate ;
@@ -62,7 +65,7 @@ public class Persons {
     private String label ;
 
     @Column
-    private  Date createDate ;
+    private  Date createDate = new Date();
 
 
     public Persons() {
@@ -90,6 +93,14 @@ public class Persons {
     public void setPhone(String phone) {
         if(phone!= null)
         this.phone = phone;
+    }
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
     }
 
     public String getPin() {

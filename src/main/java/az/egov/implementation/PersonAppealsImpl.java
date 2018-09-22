@@ -1,10 +1,16 @@
 package az.egov.implementation;
 
+import az.egov.entity.AppealTypeCtrl;
+import az.egov.entity.AppealTypes;
 import az.egov.entity.PersonAppeals;
+import az.egov.entity.UserSession;
 import az.egov.model.PersonAppealsModel;
+import az.egov.repository.AppealTypeCtrlRepository;
 import az.egov.repository.PersonAppealsRepository;
 import az.egov.repository.PersonRepository;
+import az.egov.repository.UserSessionRepository;
 import az.egov.service.PersonAppealsService;
+import az.egov.utility.helper.OperationStatus;
 import az.egov.utility.validation.PropertyValidator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -19,6 +25,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +39,11 @@ public class PersonAppealsImpl implements PersonAppealsService {
     @Autowired
     PersonAppealsRepository appealsRepository ;
 
-    /*@Autowired
-    PersonRepository personRepository ;*/
+    @Autowired
+    UserSessionRepository userSessionRepository ;
+
+    @Autowired
+    AppealTypeCtrlRepository appealTypeCtrlRepository ;
 
 
     @PersistenceContext
@@ -41,7 +51,14 @@ public class PersonAppealsImpl implements PersonAppealsService {
 
     @Override
     public List<PersonAppealsModel> getPersonAppeals(int offset, int fetch) {
-        return appealsRepository.getPersonAppeals(offset,fetch)
+
+
+        return em.createQuery(" from PersonAppeals as p where p.statusId != 3 ")
+                              .setFirstResult(offset)
+                              .setMaxResults(fetch)
+                              .getResultList() ;
+
+        /*return appealsRepository.getPersonAppeals(offset,fetch)
                                 .stream()
                                 .map(temp -> {
                                      return new PersonAppealsModel(  (BigInteger) temp[0],
@@ -57,7 +74,17 @@ public class PersonAppealsImpl implements PersonAppealsService {
                                                                      (String)     temp[10]
 
                                                                    ) ;
-                                }).collect(Collectors.toList()) ;
+                                }).collect(Collectors.toList()) ;*/
+    }
+
+
+    @Override
+    public PersonAppeals findById(Object id) {
+        return (PersonAppeals) em.createQuery("from PersonAppeals as p" +
+                                " where p.statusId != :statusId and p.id = :id")
+                               .setParameter("statusId", OperationStatus.DELETE_STATUS.getStatusId())
+                               .setParameter("id",id)
+                               .getResultList().get(0);
     }
 
     @Override
@@ -80,9 +107,32 @@ public class PersonAppealsImpl implements PersonAppealsService {
 
     }
 
+    @Override
+    public List<PersonAppeals> personAppealsByList(String sessionId) {
+        UserSession session = userSessionRepository.findBySessionId(sessionId);
+
+        return null ;
+    }
 
     @Override
-    public PersonAppeals save(PersonAppeals entity) {
+    public List<PersonAppeals> findByAppealTypes(AppealTypes appealType) {
+        return appealsRepository.findByAppealTypes(appealType);
+    }
+
+    @Override
+    public Iterator<PersonAppeals> findAll() {
+        return appealsRepository.findAll().iterator();
+    }
+
+    @Override
+    public Long totalCount() {
+        return appealsRepository.totalCount() ;
+    }
+
+
+    @Override
+    public PersonAppeals save(PersonAppeals entity)
+    {
         return appealsRepository.save(entity) ;
     }
 
@@ -96,8 +146,8 @@ public class PersonAppealsImpl implements PersonAppealsService {
        findedAppeal.setLongitude(entity.getLongitude());
        findedAppeal.setMessage(entity.getMessage());
        findedAppeal.setNote(entity.getNote());
-       findedAppeal.setSort(entity.getSort());
-       findedAppeal.setLabel(entity.getLabel());
+      /* findedAppeal.setSort(entity.getSort());
+       findedAppeal.setLabel(entity.getLabel());*/
 
        return em.merge(findedAppeal) ;
     }

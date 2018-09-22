@@ -29,6 +29,7 @@ public class AppealTypesImpl implements AppealTypeService {
     private EntityManager em ;
 
 
+
     @Override
     public List<AppealTypes> extendedSearch(Integer statusId,
                                             Integer requestTypeId,

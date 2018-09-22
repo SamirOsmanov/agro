@@ -20,6 +20,9 @@ public class UserSession {
     @Column(name = "value")
     private String sessionId ;
 
+    @Column(name = "status_id")
+    private Integer statusId ;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user ;
@@ -30,6 +33,14 @@ public class UserSession {
     private Date   lastActivity ;
     @Column
     private String ip ;
+
+    public UserSession(String sessionId, Integer statusId) {
+        this.sessionId = sessionId;
+        this.statusId = statusId;
+    }
+
+    public UserSession() {
+    }
 
     public Integer getId() {
         return id;
@@ -77,5 +88,26 @@ public class UserSession {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
+    }
+
+    @Override
+    public String toString() {
+        return "UserSession{" +
+                "id=" + id +
+                ", sessionId='" + sessionId + '\'' +
+                ", statusId=" + statusId +
+                ", user=" + user +
+                ", userAgent='" + userAgent + '\'' +
+                ", lastActivity=" + lastActivity +
+                ", ip='" + ip + '\'' +
+                '}';
     }
 }

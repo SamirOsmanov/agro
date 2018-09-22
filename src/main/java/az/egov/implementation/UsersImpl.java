@@ -9,7 +9,10 @@ import az.egov.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by admin on 12.09.2018.
@@ -22,6 +25,9 @@ public class UsersImpl implements UserService {
 
     @Autowired
     PersonService personService  ;
+
+    @PersistenceContext
+    EntityManager em ;
 
     @Override
     public Users  save(Users entity,PersonModel personModel) {
@@ -46,7 +52,27 @@ public class UsersImpl implements UserService {
             entity.setPerson(person);
         }
         return userRepository.save(entity) ;
-    } ;
+    }
+
+    @Override
+    public Long totalCount() {
+        return userRepository.totalCount() ;
+    }
+
+    @Override
+    public Users findByPerson(Persons person) {
+        return userRepository.findByPerson(person);
+    }
+
+    ;
+
+    @Override
+    public List<Users> list(Integer offset, Integer fetch) {
+        return em.createQuery("from Users as u where u.statusId != 3 ")
+                 .setFirstResult(offset)
+                 .setMaxResults(fetch)
+                 .getResultList() ;
+    }
 
     @Override
     public Users find(String username,String password)
@@ -54,4 +80,8 @@ public class UsersImpl implements UserService {
         return userRepository.findByUserNameAndPassword(username,password) ;
     }
 
+    @Override
+    public Users save(Users entity) {
+        return userRepository.save(entity) ;
+    }
 }

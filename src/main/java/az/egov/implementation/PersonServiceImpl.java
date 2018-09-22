@@ -6,6 +6,11 @@ import az.egov.repository.Log4MongoRepository;
 import az.egov.repository.PersonRepository;
 import az.egov.response.ResponseEntity;
 import az.egov.service.PersonService;
+import az.egov.utility.helper.OperationStatus;
+import az.egov.utility.validation.PropertyValidator;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,8 +31,6 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     PersonRepository personRepository ;
 
-    @Autowired
-    private Log4MongoRepository mongoRepository ;
 
     @PersistenceContext
     EntityManager em ;
@@ -47,6 +50,29 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Persons findByPin(String pin) {
         return personRepository.findByPin(pin) ;
+    }
+
+    @Override
+    public List<Persons> extendedSearch(String personId,
+                                  String pin,
+                                  String name,
+                                  String surname,
+                                  String fathername) {
+
+        Session session = em.unwrap(Session.class) ;
+
+        Criteria criteria = session.createCriteria(Persons.class) ;
+
+
+        PropertyValidator.isNull(criteria,"id",personId);
+        PropertyValidator.isNull(criteria,"pin",pin);
+        PropertyValidator.isNull(criteria,"firstName",name);
+        PropertyValidator.isNull(criteria,"lastName",surname);
+        PropertyValidator.isNull(criteria,"fatherName",fathername);
+
+        criteria.add(Restrictions.eq("statusId", OperationStatus.DELETE_STATUS.getStatusId())) ;
+
+        return criteria.list() ;
     }
 
 
@@ -73,8 +99,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Persons findById(Object id) {
-         String personId = (String)id ;
-         return personRepository.findById(id).get() ;
+         return null ;
     }
 
 

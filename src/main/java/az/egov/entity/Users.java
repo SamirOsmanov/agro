@@ -27,13 +27,32 @@ public class Users {
     @Column
     private String password ;
 
+    @Column
+    private Integer statusId ;
+
+
+    public Users() {
+    }
+
+    public Users(String id)
+    {
+        this.id = id ;
+    }
+
+
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
     private Persons person ;
 
-    @Column(name = "registration_date")
-    private Date registerDate;
+    @Column
+    private String deviceId ;
+
+    @Column
+    private String firebaseId ;
+
+    /*@Column(name = "registration_date")
+    private Date registerDate;*/
 
     public String getUserName() {
         return userName;
@@ -43,12 +62,36 @@ public class Users {
         this.userName = userName;
     }
 
-    public Date getRegisterDate() {
+    /*public Date getRegisterDate() {
         return registerDate;
     }
 
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
+    }*/
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getFirebaseId() {
+        return firebaseId;
+    }
+
+    public void setFirebaseId(String firebaseId) {
+        this.firebaseId = firebaseId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
     }
 
     public String getId() {
@@ -91,7 +134,6 @@ public class Users {
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", person=" + person +
-                ", registerDate=" + registerDate +
                 '}';
     }
 }

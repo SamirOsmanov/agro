@@ -16,7 +16,7 @@ public class PersonFields {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id ;
+    private Integer id ;
 
     @Column
     private String fieldRegistryNumber ;
@@ -28,6 +28,9 @@ public class PersonFields {
     @ManyToOne
     @JoinColumn(name = "field_amount_unit_id")
     private Units units ;
+
+    @Column
+    private Integer statusId ;
 
 
     @ManyToOne

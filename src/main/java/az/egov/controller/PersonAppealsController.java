@@ -1,15 +1,17 @@
 package az.egov.controller;
 
-import az.egov.entity.PersonAppeals;
-import az.egov.model.PersonAppealsModel;
+import az.egov.entity.*;
+import az.egov.service.AppealTypeCtrlService;
 import az.egov.service.PersonAppealsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by admin on 03.09.2018.
@@ -21,7 +23,16 @@ import java.util.List;
 public class PersonAppealsController {
 
     @Autowired
+    AppealTypeCtrlService appealTypesCtrlService ;
+
+    @Autowired
     PersonAppealsService personAppealsService ;
+
+   /* @Autowired
+    UserSessionService userSessionService ;
+
+    @Autowired
+    UserRoleService userRolesService ;*/
 
 
     @GetMapping("/list")
@@ -31,8 +42,10 @@ public class PersonAppealsController {
                                                          @RequestParam("fetch")  Integer fetch
     )
     {
-
-        return  personAppealsService.getPersonAppeals(offset,fetch) ;
+        Map<String,Object> listMap = new HashMap<>() ;
+        listMap.put("items",personAppealsService.getPersonAppeals(offset,fetch)) ;
+        listMap.put("totalCount",personAppealsService.totalCount()) ;
+        return   listMap;
     }
 
     @GetMapping("/find")
@@ -46,6 +59,11 @@ public class PersonAppealsController {
         return personAppealsService.extendedSearch(message,appealTypeId,personId) ;
     }
 
+    @GetMapping("/{id}")
+    public Object getPersonAppealsById(@PathVariable("id") BigInteger id)
+    {
+        return personAppealsService.findById(id) ;
+    }
 
     @PostMapping("/save")
     @ApiOperation(value = "Insert new person appeal to the database" ,
@@ -67,6 +85,64 @@ public class PersonAppealsController {
     {
         return personAppealsService.update(appeals);
     }
+
+
+    @GetMapping("/changestatus")
+    public Object changeAppealStatus(@RequestParam("id") Integer id ,
+                                     @RequestParam("solvedId") Integer solvedId)
+    {
+       HashMap<String,Object> response = new HashMap<>() ;
+
+       /*try {
+           Solve solve = new Solve(solvedId);
+           PersonAppeals appeal = personAppealsService.findById(id);
+           appeal.setSolve(solve);
+
+           personAppealsService.save(appeal);
+
+           response.put("success",true) ;
+       }
+       catch (Exception e)
+       {
+           response.put("success",false) ;
+       }*/
+
+       return response ;
+    }
+
+   /* @GetMapping("/listbyroles")
+    public Object personAppealsListByRole(@RequestHeader("SID") String sessionID)
+    {
+
+        Iterator<PersonAppeals> personAppealsList = null ;
+
+        UserSession session = userSessionService.findBySessionIdAndStatusId(sessionID, ACTIVE_USER_STATUS.getStatusId());
+        Users user = session.getUser() ;
+        UserRoles role =  userRolesService.findByUser(user); // 4
+
+
+        Roles roles = Roles.valueOf(role.getRole().getName().toUpperCase());
+
+        switch (roles)
+        {
+            case CONTROLLER :
+
+               AppealTypeCtrl appealType = appealTypesCtrlService.findByUser(user) ;
+               personAppealsList = personAppealsService.findByAppealTypes(appealType.getAppealType()).iterator() ;
+
+                break ;
+            case MODERATOR :
+                personAppealsList = personAppealsService.findAll() ;
+                break ;
+            case ADMIN:
+
+                break;
+
+        }
+
+        return personAppealsList ;
+
+    }*/
 
 }
 

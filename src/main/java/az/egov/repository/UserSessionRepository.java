@@ -11,4 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public interface UserSessionRepository extends JpaRepository<UserSession,Integer> {
+
+   UserSession findBySessionIdAndStatusId(String value,Integer statusId) ;
+   UserSession findBySessionId(String value) ;
 }
+
+

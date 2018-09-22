@@ -28,7 +28,7 @@ import java.util.List;
  * Created by admin on 05.09.2018.
  */
 @Aspect
-@Configuration
+//@Configuration
 public class PersonAroundAspect {
 
     @Autowired

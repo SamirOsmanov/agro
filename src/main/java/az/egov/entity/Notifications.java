@@ -16,6 +16,8 @@ public class Notifications {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id ;
 
+    @Column
+    private Integer statusId ;
 
     @Column
     private String message ;
@@ -45,6 +47,23 @@ public class Notifications {
 
     public String getFirebaseId() {
         return firebaseId;
+    }
+
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setPerson(Persons person) {
+        this.person = person;
     }
 
     public void setFirebaseId(String firebaseId) {

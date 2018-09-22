@@ -1,5 +1,7 @@
 package az.egov.implementation;
 
+
+import static az.egov.utility.helper.OperationStatus.* ;
 import az.egov.entity.UserSession;
 import az.egov.repository.UserSessionRepository;
 import az.egov.service.UserSessionService;
@@ -15,8 +17,23 @@ public class UserSessionImpl implements UserSessionService {
     @Autowired
     UserSessionRepository userSessionRepository ;
 
+
+
     @Override
     public UserSession save(UserSession entity) {
         return userSessionRepository.save(entity);
+    }
+
+    @Override
+    public UserSession findBySessionIdAndStatusId(String value, Integer statusId) {
+        return userSessionRepository.findBySessionIdAndStatusId(value,statusId);
+    }
+
+    @Override
+    public void destroySession(String sessionId) {
+        UserSession session = userSessionRepository.findBySessionId(sessionId);
+
+        session.setStatusId(UPDATE_USER_STATUS.getStatusId());
+        userSessionRepository.saveAndFlush(session) ;
     }
 }

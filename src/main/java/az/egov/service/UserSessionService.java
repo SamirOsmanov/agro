@@ -11,5 +11,6 @@ import org.springframework.stereotype.Service;
  */
 
 public interface UserSessionService extends CRUDService<UserSession> {
-
+    UserSession findBySessionIdAndStatusId(String value , Integer statusId) ;
+    void        destroySession(String sessionId) ;
 }

@@ -1,5 +1,6 @@
 package az.egov.repository;
 
+import az.egov.entity.AppealTypes;
 import az.egov.entity.PersonAppeals;
 import az.egov.entity.Persons;
 import az.egov.model.PersonAppealsModel;
@@ -28,8 +29,12 @@ public interface PersonAppealsRepository extends CrudRepository<PersonAppeals, B
                    " LEFT JOIN [KTN-DB].[List].[RequestTypes] d ON c.request_type_id = d.id " +
                    " ORDER BY c.id DESC OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY" ,
             nativeQuery = true)
-    public List<Object[]> getPersonAppeals(@Param("offset") Integer offset ,
+     List<Object[]> getPersonAppeals(@Param("offset") Integer offset ,
                                            @Param("fetch")  Integer fetch) ;
 
 
+    List<PersonAppeals> findByAppealTypes(AppealTypes appealType) ;
+
+    @Query("select count(pa) from PersonAppeals as pa where pa.statusId != 3 ")
+    Long totalCount() ;
 }

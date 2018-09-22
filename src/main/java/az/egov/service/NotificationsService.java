@@ -12,4 +12,6 @@ import java.math.BigInteger;
  */
 
 public interface NotificationsService extends CRUDService<Notifications> {
+
+    Long totalCount() ;
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 
 /**
  * Created by admin on 10.09.2018.
@@ -25,8 +26,8 @@ public class NotificationController {
        return notificationsService.save(notifications) ;
     }
 
-    @GetMapping("/find")
-    public Object findNotification(@RequestParam("id") BigInteger id)
+    @GetMapping("/{id}")
+    public Object findNotification(@PathVariable("id") BigInteger id)
     {
         return notificationsService.findById(id) ;
     }
@@ -35,6 +36,11 @@ public class NotificationController {
     public Object notificationPagination(@RequestParam("offset") Integer offset,
                                          @RequestParam("fetch")  Integer fetch)
     {
-        return notificationsService.list(offset,fetch) ;
+        HashMap<String,Object> response = new HashMap<>() ;
+        response.put("items", notificationsService.list(offset,fetch));
+        response.put("totalCount",notificationsService.totalCount()) ;
+        return response ;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package az.egov.service;
 
+import az.egov.entity.Persons;
 import az.egov.entity.Users;
 import az.egov.model.PersonModel;
 import az.egov.service.common.CRUDService;
@@ -12,4 +13,8 @@ public interface UserService extends CRUDService<Users> {
     public Users find(String username,String password) ;
 
     public Users  save(Users entity,PersonModel personModel) ;
+
+    public Long totalCount() ;
+
+    Users findByPerson(Persons person) ;
 }

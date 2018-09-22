@@ -1,9 +1,11 @@
 package az.egov.controller;
 
 import az.egov.entity.Persons;
+import az.egov.entity.Users;
 import az.egov.repository.Log4MongoRepository;
 
 import az.egov.service.PersonService;
+import az.egov.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.json.JSONObject;
@@ -32,6 +34,9 @@ public class PersonController {
     @Autowired
     PersonService personService ;
 
+    @Autowired
+    UserService userService ;
+
 
     private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
@@ -45,9 +50,9 @@ public class PersonController {
                                 )
     {
 
-        System.out.println("SESSION ID : " + servletRequest.getSession().getId());
        return  personService.getPersonList(offset,fetch) ;
     }
+
 
     @PostMapping("/save")
     @ApiOperation(value = "Insert new Person to the database" ,
@@ -60,9 +65,19 @@ public class PersonController {
     @GetMapping("/find")
     @ApiOperation(value = "Find Person by unique identifier",
                   response = Persons.class)
-    public Object findById(@RequestParam("id") String personId)
+    public Object findById(@RequestParam(value = "id",required = false)      String personId,
+                           @RequestParam(value = "pin",required = false)     String pin ,
+                           @RequestParam(value = "name",required = false)    String name,
+                           @RequestParam(value = "surname",required = false) String surname,
+                           @RequestParam(value = "father",required = false)  String fathername)
     {
-        return personService.findById(personId) ;
+        return personService.extendedSearch(personId,pin,name,surname,fathername) ;
+    }
+
+    @GetMapping("/{id}")
+    public Object getPersonById(@PathVariable("id") String id )
+    {
+        return personService.findById(id) ;
     }
 
     @PutMapping("/update")
@@ -76,11 +91,15 @@ public class PersonController {
 
     @GetMapping("/verify")
     public Object verifyPerson(@RequestParam("pin") String pin,
-                               @RequestParam("phone") String phone)
+                               @RequestParam("phone") String phone,
+                               @RequestHeader(value = "deviceId",required = false) String deviceId,
+                               @RequestHeader(value = "firebaseId",required = false) String firebaseId)
     {
         ResponseEntity<Boolean> exchange = null ;
 
-        RestTemplate restTemplate = new RestTemplate() ;
+        return verifyPersonExists(pin,phone,deviceId,firebaseId) ;
+
+        /*RestTemplate restTemplate = new RestTemplate() ;
         HttpHeaders headers = new HttpHeaders();
         headers.set("token","1111");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
@@ -128,6 +147,81 @@ public class PersonController {
             response.put("status",false) ;
             e.printStackTrace();
 
+
+        }
+        finally {
+            return response ;
+        }*/
+    }
+
+
+
+
+    public Object verifyPersonExists(  String pin,
+                                       String phone,
+                                       String deviceId,
+                                       String firebaseId)
+    {
+        ResponseEntity<Boolean> exchange = null ;
+
+        RestTemplate restTemplate = new RestTemplate() ;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("token","1111");
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        String personVerifierUrl =  "http://10.255.110.1:8080/agro/api/person/verify/v1?pin="+pin+"&phone="+phone ;
+
+        try
+        {
+            exchange = restTemplate.exchange(personVerifierUrl, HttpMethod.GET, entity, Boolean.class);
+
+            Boolean body = exchange.getBody();
+
+            if(body != null )
+            {
+                // Nomre dogurdan wexsin adinadir
+                if(body.booleanValue()) {
+
+                    Persons byPin = personService.findByPin(pin);
+
+                    if(byPin != null) {
+
+                        Users byPerson = userService.findByPerson(byPin);
+                        byPerson.setFirebaseId(firebaseId);
+                        byPerson.setDeviceId(deviceId);
+
+                        userService.save(byPerson) ;
+
+                        response.put("success",true) ;
+                        response.put("isRegistered",true) ;
+                        response.put("person",byPin) ;
+                    }
+                    else
+                    {
+                        response.put("success", true);
+                        response.put("isRegistered",false) ;
+                    }
+
+                }
+                else
+                {
+                    response.put("success", false);
+                    response.put("isRegistered",false) ;
+                }
+            }
+            else
+            {
+                response.put("success",false) ;
+                response.put("isRegistered",false) ;
+            }
+
+        }
+        catch (Exception e)
+        {
+            response.put("success",false) ;
+            e.printStackTrace();
 
         }
         finally {

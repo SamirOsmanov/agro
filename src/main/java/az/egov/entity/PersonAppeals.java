@@ -1,5 +1,6 @@
 package az.egov.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,6 +21,9 @@ public class PersonAppeals {
 
     private String message ;
 
+    @Column
+    private Integer statusId ;
+
     @Column(name = "application_number")
     private String applicationNumber ;
     @Column
@@ -29,24 +33,33 @@ public class PersonAppeals {
     @Column
     private String note ;
 
-    @Column
+   /* @Column
     private Integer sort ;
 
     @Column
-    private String label ;
+    private String label ;*/
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Persons person ;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "appeal_type_id")
     private AppealTypes appealTypes ;
 
     public void setMessage(String message) {
         if(message!= null)
          this.message = message;
+    }
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
     }
 
     public void setApplicationNumber(String applicationNumber) {
@@ -111,7 +124,7 @@ public class PersonAppeals {
         return appealTypes;
     }
 
-    public Integer getSort() {
+    /*public Integer getSort() {
         return sort;
     }
 
@@ -127,6 +140,12 @@ public class PersonAppeals {
     public void setLabel(String label) {
         if(label != null)
           this.label = label;
+    }*/
+
+
+
+    public void setId(BigInteger id) {
+        this.id = id;
     }
 
     @Override
@@ -137,8 +156,8 @@ public class PersonAppeals {
                 ", \nlongitude='" + longitude + '\'' +
                 ", \nlatitude='" + latitude + '\'' +
                 ", \nnote='" + note + '\'' +
-                ", \nsort=" + sort +
-                ", \nlabel='" + label + '\'' +
+               // ", \nsort=" + sort +
+                //", \nlabel='" + label + '\'' +
                 ", \nperson=" + person +
                 ", \nappealTypes=" + appealTypes +
                 '}';

@@ -14,5 +14,7 @@ public interface PersonFieldService extends CRUDService<PersonFields>
 {
     List<PersonFields> getPersonFieldsList(int offset , int fetch) ;
 
-    List<PersonFields> findByPersonId(Persons person) ;
+    List<PersonFields> findByPersonAndStatusId(Persons person,Integer statusId) ;
+
+    Long totalCount() ;
 }

@@ -19,4 +19,10 @@ public interface PersonService extends CRUDService<Persons> {
     long totalPersonCount() ;
 
     public Persons findByPin(String pin) ;
+
+    public List<Persons>   extendedSearch(String personId,
+                                          String pin,
+                                          String name,
+                                          String surname,
+                                          String fathername) ;
 }
