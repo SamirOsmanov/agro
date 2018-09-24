@@ -23,6 +23,9 @@ public class UserSession {
     @Column(name = "status_id")
     private Integer statusId ;
 
+    @Column(name = "isMobile")
+    private Integer isMobile ;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user ;
@@ -96,6 +99,14 @@ public class UserSession {
 
     public void setStatusId(Integer statusId) {
         this.statusId = statusId;
+    }
+
+    public Integer getIsMobile() {
+        return isMobile;
+    }
+
+    public void setIsMobile(Integer isMobile) {
+        this.isMobile = isMobile;
     }
 
     @Override

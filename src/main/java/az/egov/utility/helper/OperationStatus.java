@@ -13,6 +13,7 @@ public enum OperationStatus {
     INSERT_STATUS(1) ,
     DELETE_STATUS(3) ,
     IS_NOT_VERIFIED(0) ,
+    IS_MOBILE(1) ,
     IS_VERIFIED(1) ;
 
     private Integer statusId ;

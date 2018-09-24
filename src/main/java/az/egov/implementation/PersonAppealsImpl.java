@@ -58,23 +58,6 @@ public class PersonAppealsImpl implements PersonAppealsService {
                               .setMaxResults(fetch)
                               .getResultList() ;
 
-        /*return appealsRepository.getPersonAppeals(offset,fetch)
-                                .stream()
-                                .map(temp -> {
-                                     return new PersonAppealsModel(  (BigInteger) temp[0],
-                                                                     (Date)       temp[1],
-                                                                     (String)     temp[2],
-                                                                     (String)     temp[3],
-                                                                     (String)     temp[4],
-                                                                     (String)     temp[5],
-                                                                     (String)     temp[6],
-                                                                     (Integer)    temp[7],
-                                                                     (String)     temp[8],
-                                                                     (Integer)    temp[9],
-                                                                     (String)     temp[10]
-
-                                                                   ) ;
-                                }).collect(Collectors.toList()) ;*/
     }
 
 

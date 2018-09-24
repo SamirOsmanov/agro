@@ -14,12 +14,16 @@ public interface CRUDService<T> {
     default public T  save(T entity) {return null ; } ;
     default public T  update(T entity) {return null ; } ;
 
-    default public T     findById(Object id){
+    default public T  findById(Object id){
         return null ;
     } ;
 
     default public List<T> list(Integer offset ,
                                 Integer fetch){
+        return null ;
+    } ;
+
+    default public T  deleteById(Object id){
         return null ;
     } ;
 }

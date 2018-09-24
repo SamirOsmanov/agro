@@ -14,6 +14,7 @@ import az.egov.utility.exception.SessionTimeoutException;
 import az.egov.utility.exception.TokenNotFoundException;
 import az.egov.utility.helper.Messages;
 import az.egov.utility.helper.OperationStatus;
+import az.egov.utility.helper.Values;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Aspect
-@Configuration
+//@Configuration
 public class CheckTokenAspect {
 
     @Autowired
@@ -85,22 +86,31 @@ public class CheckTokenAspect {
                 throw new InvalidSessionException(Messages.INVALID_SID.getMessageContent()) ;
             }
 
-            long activityTime = userSession.getLastActivity().getTime() ;
-            long currentTime  = new Date().getTime() ;
+            String sourceType = request.getHeader("source") ;
 
-            long activityDuration = TimeUnit.MILLISECONDS
-                                            .toMinutes(currentTime - activityTime);
-
-            if(activityDuration > 30)
+            if(sourceType != null )
             {
-               userSession.setStatusId(OperationStatus.SESSION_EXPIRED.getStatusId());
-               userSessionService.save(userSession) ;
-               throw new SessionTimeoutException(Messages.SESSION_TIMEOUT.getMessageContent()) ;
+                if(sourceType.toUpperCase().equals(Values.SOURCE.name()))
+                {
+                    userSession.setIsMobile(OperationStatus.IS_MOBILE.getStatusId());
+                    userSessionService.save(userSession);
+                }
             }
-            else
-            {
-                userSession.setLastActivity(new Date());
-                userSessionService.save(userSession) ;
+            else {
+                long activityTime = userSession.getLastActivity().getTime();
+                long currentTime = new Date().getTime();
+
+                long activityDuration = TimeUnit.MILLISECONDS
+                        .toMinutes(currentTime - activityTime);
+
+                if (activityDuration > 30) {
+                    userSession.setStatusId(OperationStatus.SESSION_EXPIRED.getStatusId());
+                    userSessionService.save(userSession);
+                    throw new SessionTimeoutException(Messages.SESSION_TIMEOUT.getMessageContent());
+                } else {
+                    userSession.setLastActivity(new Date());
+                    userSessionService.save(userSession);
+                }
             }
 
 
