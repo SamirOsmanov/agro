@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Aspect
-//@Configuration
+@Configuration
 public class CheckTokenAspect {
 
     @Autowired

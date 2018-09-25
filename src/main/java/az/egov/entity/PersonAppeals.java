@@ -21,8 +21,6 @@ public class PersonAppeals {
 
     private String message ;
 
-    @Column
-    private Integer statusId ;
 
     @Column(name = "application_number")
     private String applicationNumber ;
@@ -45,6 +43,11 @@ public class PersonAppeals {
     @JoinColumn(name = "person_id")
     private Persons person ;
 
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status ;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "appeal_type_id")
     private AppealTypes appealTypes ;
@@ -54,12 +57,12 @@ public class PersonAppeals {
          this.message = message;
     }
 
-    public Integer getStatusId() {
-        return statusId;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setStatusId(Integer statusId) {
-        this.statusId = statusId;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public void setApplicationNumber(String applicationNumber) {

@@ -1,8 +1,11 @@
 package az.egov.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by admin on 24.09.2018.
@@ -26,5 +29,9 @@ public class ActivityAreas {
     {
         this.id = id ;
     }
+
+    @ManyToMany(mappedBy = "activityAreas")
+    @JsonIgnore
+    private List<MemberShips> memberShips = new ArrayList<>();
 
 }

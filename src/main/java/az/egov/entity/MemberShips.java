@@ -4,8 +4,11 @@ import lombok.Data;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by admin on 24.09.2018.
@@ -33,14 +36,25 @@ public class MemberShips {
     @JoinColumn(name = "membership_type_id")
     private MemberShipTypes memberShipTypes;
 
-    @ManyToOne
-    @JoinColumn(name = "activity_area_id")
-    private ActivityAreas activityAreas ;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "Membershipactivityarea",
+               schema = "Rel" ,
+               joinColumns = @JoinColumn(name = "membership_id"),
+               inverseJoinColumns = @JoinColumn(name = "activity_area_id")
+    )
+    private List<ActivityAreas> activityAreas = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status ;
 
+
+    public MemberShips() {
+    }
+
+    public MemberShips(Integer id) {
+       this.id = id ;
+    }
 
     public Integer getId() {
         return id;
@@ -86,13 +100,13 @@ public class MemberShips {
          this.memberShipTypes = memberShipTypes;
     }
 
-    public ActivityAreas getActivityAreas() {
+    public List<ActivityAreas> getActivityAreas() {
         return activityAreas;
     }
 
-    public void setActivityAreas(ActivityAreas activityAreas) {
+    public void setActivityAreas(List<ActivityAreas> activityAreas) {
         if(activityAreas != null)
-         this.activityAreas = activityAreas;
+        this.activityAreas = activityAreas;
     }
 
     public Status getStatus() {

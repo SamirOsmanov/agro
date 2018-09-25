@@ -108,9 +108,11 @@ public class NewsController {
 
         try
         {
-            if(newsService.update(findNews) != null)
+            News updated = newsService.update(findNews);
+            if( updated != null)
             {
                response.put("success",true) ;
+               response.put("item",updated) ;
                response.put("descr","Successfully updated news") ;
             }
             else

@@ -1,8 +1,9 @@
 package az.egov.controller;
 
-import az.egov.entity.MemberShips;
-import az.egov.entity.Status;
+import az.egov.entity.*;
+import az.egov.repository.PersonRepository;
 import az.egov.service.MemberShipService;
+import az.egov.service.PersonMembershipService;
 import az.egov.utility.helper.OperationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,12 @@ public class MemberShipController {
 
    @Autowired
    private MemberShipService memberShipsService ;
+
+   @Autowired
+   private PersonMembershipService personMembershipService ;
+
+   @Autowired
+   private PersonRepository personsRepository ;
 
 
     @GetMapping("/list")
@@ -127,6 +134,84 @@ public class MemberShipController {
         }
     }
 
+
+   @DeleteMapping("/deleteperson")
+   public Object removePersonFromMembership(@RequestBody HashMap<String,Object> params)
+   {
+       HashMap<String,Object> response = new HashMap<>() ;
+
+
+       try {
+           Integer memberShipID = (Integer) params.get("memberShipID");
+           String pin           = (String) params.get("pin");
+
+           MemberShips memberShips = new MemberShips(memberShipID);
+           Status status = new Status(OperationStatus.DELETE_STATUS.getStatusId());
+
+           PersonMemberships personMemberships = new PersonMemberships();
+           Persons person = personsRepository.findByPin(pin);
+
+
+           PersonMemberships byPersonAndMemberShips = personMembershipService.findByPersonAndMemberShips(person, memberShips);
+           byPersonAndMemberShips.setStatus(status);
+
+           personMembershipService.save(byPersonAndMemberShips);
+
+           response.put("success", true);
+       }
+       catch (Exception e)
+       {
+           response.put("success", false);
+       }
+       finally {
+           return response ;
+       }
+
+
+   }
+
+   @PostMapping("/addperson")
+   public Object addPersonIntoMemberShip(@RequestBody HashMap<String,Object> params)
+   {
+       HashMap<String,Object> response = new HashMap<>() ;
+
+       try {
+
+           Integer positionID   = (Integer) params.get("positionID") ;
+           Integer memberShipID = (Integer) params.get("memberShipID");
+           String  pin          = (String)  params.get("pin") ;
+
+           MemberShips memberShips = new MemberShips(memberShipID);
+           Status status = new Status(OperationStatus.INSERT_STATUS.getStatusId());
+
+           PersonMemberships personMemberships = new PersonMemberships();
+           Positions position = new Positions(positionID) ;
+
+           Persons person = personsRepository.findByPin(pin) ;
+
+           personMemberships.setPerson(person);
+           personMemberships.setPosition(position);
+
+           personMemberships.setMemberShips(memberShips);
+           personMemberships.setStatus(status);
+
+           PersonMemberships saved = personMembershipService.save(personMemberships);
+
+           response.put("id",saved.getId()) ;
+           response.put("success",true) ;
+       }
+       catch (Exception e)
+       {
+          response.put("success",false) ;
+       }
+       finally {
+          return response ;
+       }
+
+
+   }
+
+
    @DeleteMapping("/delete/{id}")
    public Object deleteMemberShip(@PathVariable("id") Integer id)
    {
@@ -160,7 +245,8 @@ public class MemberShipController {
        try {
 
            Status status = new Status(INSERT_STATUS.getStatusId()) ;
-           memberShip.setStatus(status); ;
+           memberShip.setStatus(status);
+
            Integer id = memberShipsService.save(memberShip).getId();
 
            response.put("id",id) ;

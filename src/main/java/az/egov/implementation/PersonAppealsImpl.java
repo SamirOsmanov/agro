@@ -53,7 +53,7 @@ public class PersonAppealsImpl implements PersonAppealsService {
     public List<PersonAppealsModel> getPersonAppeals(int offset, int fetch) {
 
 
-        return em.createQuery(" from PersonAppeals as p where p.statusId != 3 ")
+        return em.createQuery(" from PersonAppeals as p where p.status.id != 3 and p.applicationNumber is not null ")
                               .setFirstResult(offset)
                               .setMaxResults(fetch)
                               .getResultList() ;
@@ -64,7 +64,7 @@ public class PersonAppealsImpl implements PersonAppealsService {
     @Override
     public PersonAppeals findById(Object id) {
         return (PersonAppeals) em.createQuery("from PersonAppeals as p" +
-                                " where p.statusId != :statusId and p.id = :id")
+                                " where p.status.id != :statusId and p.id = :id")
                                .setParameter("statusId", OperationStatus.DELETE_STATUS.getStatusId())
                                .setParameter("id",id)
                                .getResultList().get(0);
@@ -79,11 +79,14 @@ public class PersonAppealsImpl implements PersonAppealsService {
 
          Criteria criteria = session.createCriteria(PersonAppeals.class)
                                     .createAlias("person","p")
+                                    .createAlias("status","s")
                                     .createAlias("appealTypes","a");
 
          PropertyValidator.isNull(criteria,"message",message);
          PropertyValidator.isNull(criteria,"p.id",personId);
          PropertyValidator.isNull(criteria,"a.id",appealTypeId);
+
+         criteria.add(Restrictions.ne("s.id",OperationStatus.DELETE_STATUS.getStatusId())) ;
 
          return criteria.list() ;
 

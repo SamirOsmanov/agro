@@ -18,6 +18,8 @@ public interface CRUDService<T> {
         return null ;
     } ;
 
+
+
     default public List<T> list(Integer offset ,
                                 Integer fetch){
         return null ;

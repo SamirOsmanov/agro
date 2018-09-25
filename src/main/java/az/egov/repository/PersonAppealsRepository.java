@@ -30,11 +30,11 @@ public interface PersonAppealsRepository extends CrudRepository<PersonAppeals, B
                    " ORDER BY c.id DESC OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY" ,
             nativeQuery = true)
      List<Object[]> getPersonAppeals(@Param("offset") Integer offset ,
-                                           @Param("fetch")  Integer fetch) ;
+                                     @Param("fetch")  Integer fetch) ;
 
 
     List<PersonAppeals> findByAppealTypes(AppealTypes appealType) ;
 
-    @Query("select count(pa) from PersonAppeals as pa where pa.statusId != 3 ")
+    @Query("select count(pa) from PersonAppeals as pa where pa.status.id != 3 ")
     Long totalCount() ;
 }

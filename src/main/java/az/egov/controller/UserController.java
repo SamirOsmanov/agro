@@ -77,14 +77,18 @@ public class UserController {
 
         try
         {
-            exchange = restTemplate.exchange(personVerifierUrl, HttpMethod.GET, entity, PersonModel.class);
+            exchange = restTemplate.exchange(personVerifierUrl,
+                                             HttpMethod.GET,
+                                             entity,
+                                             PersonModel.class);
 
 
             if (exchange == null)
                 throw new NullPointerException() ;
         }
-        catch (NullPointerException e)
+        catch (Exception e)
         {
+            e.printStackTrace();
             exchange = new ResponseEntity<PersonModel>(HttpStatus.NO_CONTENT) ;
         }
         finally {
@@ -96,6 +100,7 @@ public class UserController {
     @PostMapping("/login")
     public Object loginUser(@RequestBody Users user ,
                             @RequestHeader(value="User-Agent") String agent,
+                            @RequestHeader(value = "source",required = false) String source ,
                             HttpServletRequest request) throws Exception {
 
         Boolean isUserExist = false ;
@@ -108,19 +113,19 @@ public class UserController {
 
         String sessionID = null ;
 
-            if(userInfo != null)
-            {
+        try {
+            if (userInfo != null) {
 
 
                 session = request.getSession(true);
                 session.setMaxInactiveInterval(1);
 
-                sessionID  = session.getId() ;
-                String userAgent  = agent ;
-                Date lastActivity = new Date() ;
-                String clientIP   = request.getRemoteAddr();
+                sessionID = session.getId();
+                String userAgent = agent;
+                Date lastActivity = new Date();
+                String clientIP = request.getRemoteAddr();
 
-                UserSession newSession = new UserSession() ;
+                UserSession newSession = new UserSession();
 
                 newSession.setIp(clientIP);
                 newSession.setStatusId(OperationStatus.INSERT_STATUS.getStatusId());
@@ -129,22 +134,34 @@ public class UserController {
                 newSession.setUserAgent(userAgent);
                 newSession.setUser(userInfo);
 
+                if (source != null)
+                {
+                    newSession.setIsMobile(OperationStatus.IS_MOBILE.getStatusId());
+                }
+                else
+                {
+                    newSession.setIsMobile(OperationStatus.IS_NOT_MOBILE.getStatusId());
+                }
+
                 UserSession savedUser = userSessionService.save(newSession);
                 Persons person = savedUser.getUser().getPerson();
 
                 UserRoles userRole = userRoleService.findByUser(savedUser.getUser());
 
 
-                response.put("SID",sessionID) ;
+                response.put("SID", sessionID);
                 //response.put("role",userRole.getRole()) ;
-                response.put("person" , person) ;
+                 response.put("person" , person) ;
 
-                isUserExist = true ;
+                isUserExist = true;
+            } else {
+                isUserExist = false;
             }
-            else
-            {
-                isUserExist = false ;
-            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
 
         response.put("success",isUserExist) ;
@@ -153,10 +170,24 @@ public class UserController {
     }
 
 
-    @GetMapping("/logout")
-    public void exitFromApp(@RequestHeader(value = "SID") String sessionID)
+    @GetMapping("/signout")
+    public Object exitFromApp(@RequestHeader(value = "SID") String sessionID)
     {
-        userSessionService.destroySession(sessionID);
+        HashMap<String,Object> response  = new HashMap<>() ;
+
+        try{
+            userSessionService.destroySession(sessionID);
+            response.put("success",true) ;
+        }
+        catch(Exception e)
+        {
+            response.put("success",false) ;
+        }
+        finally {
+            return response ;
+        }
+
+
     }
 
 

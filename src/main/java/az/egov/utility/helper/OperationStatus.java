@@ -14,6 +14,7 @@ public enum OperationStatus {
     DELETE_STATUS(3) ,
     IS_NOT_VERIFIED(0) ,
     IS_MOBILE(1) ,
+    IS_NOT_MOBILE(0) ,
     IS_VERIFIED(1) ;
 
     private Integer statusId ;

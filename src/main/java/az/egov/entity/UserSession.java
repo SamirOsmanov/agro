@@ -23,7 +23,7 @@ public class UserSession {
     @Column(name = "status_id")
     private Integer statusId ;
 
-    @Column(name = "isMobile")
+    @Column(name = "ismobile")
     private Integer isMobile ;
 
     @ManyToOne
