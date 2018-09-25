@@ -146,7 +146,7 @@ public class UserController {
                 UserSession savedUser = userSessionService.save(newSession);
                 Persons person = savedUser.getUser().getPerson();
 
-                UserRoles userRole = userRoleService.findByUser(savedUser.getUser());
+                //UserRoles userRole = userRoleService.findByUser(savedUser.getUser());
 
 
                 response.put("SID", sessionID);
