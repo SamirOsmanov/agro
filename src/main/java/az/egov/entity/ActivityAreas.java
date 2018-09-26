@@ -30,8 +30,10 @@ public class ActivityAreas {
         this.id = id ;
     }
 
-    @ManyToMany(mappedBy = "activityAreas")
+    @ManyToMany(  mappedBy = "activityAreas")
     @JsonIgnore
-    private List<MemberShips> memberShips = new ArrayList<>();
+    private List<MemberShips> memberShips  ;
+
+
 
 }

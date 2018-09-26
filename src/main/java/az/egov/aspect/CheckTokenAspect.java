@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Aspect
-@Configuration
+//@Configuration
 public class CheckTokenAspect {
 
     @Autowired
@@ -49,14 +49,74 @@ public class CheckTokenAspect {
     @Value("${agro.user.token}")
     private String TOKEN_VALUE ;
 
-    @Pointcut("execution(* az.egov.controller.*.*(..))" +
+    /*@Pointcut("execution(* az.egov.controller.*.*(..))" +
             "  && !execution(* az.egov.controller.UserController.*(..))" +
             "  && !execution(* az.egov.controller.PersonController.verifyPerson(..))")
-    public void exludedMethods() {}
+    public void exludedMethods() {}*/
+
+
+    @Pointcut("execution(* az.egov.controller.AppealTypesController.*(..))")
+    public void appealTypeAspect() {} ;
+
+
+    @Pointcut("execution(* az.egov.controller.DictionaryController.*(..))")
+    public void dictionaryAspect() {} ;
+
+
+    @Pointcut("execution(* az.egov.controller.MemberShipController.*(..))")
+    public void membershipAspect() {} ;
+
+
+    @Pointcut("execution(* az.egov.controller.NewsController.*(..))")
+    public void newseAspect() {} ;
+
+
+    @Pointcut("execution(* az.egov.controller.NotificationController.*(..))")
+    public void notificationAspect() {} ;
+
+
+    @Pointcut("execution(* az.egov.controller.PersonAppealsController.*(..))")
+    public void personAppealAspect() {} ;
 
 
 
-    @Before("exludedMethods()")
+    @Before("appealTypeAspect()")
+    public void checkAppealAspect()
+    {
+        checkRequestHeaderParams();
+    }
+
+
+    @Before("dictionaryAspect()")
+    public void checkDictionaryAspect()
+    {
+        checkRequestHeaderParams();
+    }
+
+    @Before("membershipAspect()")
+    public void checkMembershipAspect()
+    {
+        checkRequestHeaderParams();
+    }
+
+    @Before("newseAspect()")
+    public void checkNewseAspect()
+    {
+        checkRequestHeaderParams();
+    }
+
+    @Before("(notificationAspect())")
+    public void checkNotificationAspect()
+    {
+        checkRequestHeaderParams();
+    }
+    @Before("personAppealAspect()")
+    public void checkPersonAppealAspect()
+    {
+        checkRequestHeaderParams();
+    }
+
+
     public void checkRequestHeaderParams()
     {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();

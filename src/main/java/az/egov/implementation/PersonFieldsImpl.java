@@ -2,6 +2,7 @@ package az.egov.implementation;
 
 import az.egov.entity.PersonFields;
 import az.egov.entity.Persons;
+import az.egov.entity.Status;
 import az.egov.repository.PersonFieldsRepository;
 import az.egov.service.PersonFieldService;
 import az.egov.utility.helper.OperationStatus;
@@ -27,7 +28,7 @@ public class PersonFieldsImpl implements PersonFieldService {
 
     @Override
     public List<PersonFields> getPersonFieldsList(int offset, int fetch) {
-        return em.createQuery("from PersonFields as p where p.statusId != 3 ")
+        return em.createQuery("from PersonFields as p where p.status.id != 3 ")
                   .setFirstResult(offset)
                  .setMaxResults(fetch)
                   .getResultList() ;
@@ -36,15 +37,18 @@ public class PersonFieldsImpl implements PersonFieldService {
     @Override
     public PersonFields findById(Object id) {
         return (PersonFields) em.createQuery("from PersonFields as p " +
-                                 "where p.statusId != :statusId and p.id=:id")
+                                 "where p.status.id != :statusId and p.id=:id")
                              .setParameter("statusId", OperationStatus.DELETE_STATUS.getStatusId())
                              .setParameter("id", id)
                              .getResultList().get(0);
     }
 
     @Override
-    public List<PersonFields> findByPersonAndStatusId(Persons person,Integer statusId) {
-         return personFieldRepository.findByPersonAndStatusId(person,statusId);
+    public List<PersonFields> findByPersonAndStatus(Persons person,Integer statusId) {
+
+        Status status  =new Status(statusId) ;
+
+         return personFieldRepository.findByPersonAndStatus(person,status);
     }
 
     @Override

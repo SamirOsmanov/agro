@@ -5,7 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by admin on 03.09.2018.
@@ -44,8 +46,6 @@ public class Persons {
     @Column(length = 30)
     private String voen ;
 
-    @Column(length = 20)
-    private String phone ;
 
     @Column
     private Integer statusId ;
@@ -68,7 +68,14 @@ public class Persons {
     private  Date createDate = new Date();
 
 
+    @OneToMany(mappedBy = "person")
+    private List<PersonContacts> contactsList;
+
     public Persons() {
+    }
+
+    public List<PersonContacts> getContactsList() {
+        return contactsList;
     }
 
     public Persons(String id)
@@ -82,17 +89,6 @@ public class Persons {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        if(phone!= null)
-        this.phone = phone;
     }
 
     public Integer getStatusId() {
@@ -222,7 +218,6 @@ public class Persons {
                 ",\n ssn='" + ssn + '\'' +
                 ",\n organizationName='" + organizationName + '\'' +
                 ",\n voen='" + voen + '\'' +
-                ",\n phone='" + phone + '\'' +
                 ",\n voenCreatedDate=" + voenCreatedDate +
                 ",\n voenExpiredDate=" + voenExpiredDate +
                 ",\n note='" + note + '\'' +

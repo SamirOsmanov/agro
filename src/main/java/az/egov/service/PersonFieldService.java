@@ -2,6 +2,7 @@ package az.egov.service;
 
 import az.egov.entity.PersonFields;
 import az.egov.entity.Persons;
+import az.egov.entity.Status;
 import az.egov.service.common.CRUDService;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface PersonFieldService extends CRUDService<PersonFields>
 {
     List<PersonFields> getPersonFieldsList(int offset , int fetch) ;
 
-    List<PersonFields> findByPersonAndStatusId(Persons person,Integer statusId) ;
+    List<PersonFields> findByPersonAndStatus(Persons person,Integer status) ;
 
     Long totalCount() ;
 }

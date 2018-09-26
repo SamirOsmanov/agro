@@ -308,7 +308,7 @@ public class UserController {
                         newPerson.setFirstName(person.getBody().getFirstName());
                         newPerson.setLastName(person.getBody().getLastName());
                         newPerson.setPin(person.getBody().getPin());
-                        newPerson.setPhone(phone);
+                        //newPerson.setPhone(phone);
 
                         Persons savedPerson = personService.save(newPerson);
                         user.setPerson(savedPerson);

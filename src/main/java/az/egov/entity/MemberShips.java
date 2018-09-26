@@ -36,13 +36,13 @@ public class MemberShips {
     @JoinColumn(name = "membership_type_id")
     private MemberShipTypes memberShipTypes;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany
     @JoinTable(name = "Membershipactivityarea",
                schema = "Rel" ,
                joinColumns = @JoinColumn(name = "membership_id"),
                inverseJoinColumns = @JoinColumn(name = "activity_area_id")
     )
-    private List<ActivityAreas> activityAreas = new ArrayList<>();
+    private List<ActivityAreas> activityAreas  ;
 
     @ManyToOne
     @JoinColumn(name = "status_id")

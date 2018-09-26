@@ -29,8 +29,9 @@ public class PersonFields {
     @JoinColumn(name = "field_amount_unit_id")
     private Units units ;
 
-    @Column
-    private Integer statusId ;
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status ;
 
 
     @ManyToOne

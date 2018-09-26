@@ -2,6 +2,7 @@ package az.egov.controller;
 
 import az.egov.entity.Persons;
 import az.egov.entity.Users;
+import az.egov.model.Contact;
 import az.egov.repository.Log4MongoRepository;
 
 import az.egov.service.PersonService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -53,6 +55,100 @@ public class PersonController {
        return  personService.getPersonList(offset,fetch) ;
     }
 
+    @PostMapping("/addinfo")
+    public Object savePersonAdditionalInfo(@RequestBody HashMap<String,Object> request)
+    {
+        HashMap<String,Object> response = new HashMap<>() ;
+
+        try
+        {
+            String personId      = (String)request.get("id") ;
+            List contactList     = (List)  request.get("contacts");
+            String address       = (String)request.get("address") ;
+            Integer address_type = (Integer)request.get("addressType") ;
+
+            personService.savePersonAddress(personId,address_type,address);
+
+            for (Object contact : contactList)
+            {
+                HashMap<String,Object> data = (HashMap<String, Object>) contact;
+                personService.savePersonContacts(personId,
+                                                (Integer) data.get("id"),
+                                                (String)data.get("value"));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            response.put("success",false) ;
+        }
+        finally {
+            return response ;
+        }
+    }
+
+    @PostMapping("/updateactivity")
+    public Object updateActivity(@RequestBody HashMap<String,Object> request) {
+
+        HashMap<String,Object> response = new HashMap<>() ;
+
+        try
+        {
+
+            String personId = (String)request.get("id") ;
+            List<Integer> activityList = (List<Integer>)request.get("activityAreasList");
+            Integer areaId = (Integer)request.get("areaId") ;
+
+            personService.deletePersonActivity(personId);
+
+            for (Integer activity : activityList)
+            {
+                personService.savePersonActivity(personId,activity,areaId);
+            }
+
+            response.put("success",true) ;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            response.put("success",false) ;
+        }
+        finally {
+            return response ;
+        }
+    }
+
+
+    @PostMapping("/addactivity")
+    public Object addActivity(@RequestBody HashMap<String,Object> request)
+    {
+
+        HashMap<String,Object> response = new HashMap<>() ;
+
+        try
+        {
+
+            String personId = (String)request.get("id") ;
+            List<Integer> activityList = (List<Integer>)request.get("activityAreasList");
+            Integer areaId = (Integer)request.get("areaId") ;
+
+            for (Integer activity : activityList)
+            {
+               personService.savePersonActivity(personId,activity,areaId);
+            }
+
+
+            response.put("success",true) ;
+        }
+        catch (Exception e)
+        {
+            response.put("success",false) ;
+        }
+        finally {
+            return response ;
+        }
+    }
+
 
     @PostMapping("/save")
     @ApiOperation(value = "Insert new Person to the database" ,
@@ -71,7 +167,14 @@ public class PersonController {
                            @RequestParam(value = "surname",required = false) String surname,
                            @RequestParam(value = "father",required = false)  String fathername)
     {
-        return personService.extendedSearch(personId,pin,name,surname,fathername) ;
+        try {
+            return personService.extendedSearch(personId, pin, name, surname, fathername);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return  null ;
     }
 
     @GetMapping("/{id}")

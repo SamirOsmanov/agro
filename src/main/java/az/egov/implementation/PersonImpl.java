@@ -12,6 +12,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 
 @Service
-public class PersonServiceImpl implements PersonService {
+public class PersonImpl implements PersonService {
 
     @Autowired
     PersonRepository personRepository ;
@@ -66,13 +67,35 @@ public class PersonServiceImpl implements PersonService {
 
         PropertyValidator.isNull(criteria,"id",personId);
         PropertyValidator.isNull(criteria,"pin",pin);
-        PropertyValidator.isNull(criteria,"firstName",name);
-        PropertyValidator.isNull(criteria,"lastName",surname);
-        PropertyValidator.isNull(criteria,"fatherName",fathername);
+        PropertyValidator.like(criteria,"firstName",name);
+        PropertyValidator.like(criteria,"lastName",surname);
+        PropertyValidator.like(criteria,"fatherName",fathername);
 
-        criteria.add(Restrictions.eq("statusId", OperationStatus.DELETE_STATUS.getStatusId())) ;
+        criteria.add(Restrictions.ne("statusId", OperationStatus.DELETE_STATUS.getStatusId())) ;
 
         return criteria.list() ;
+    }
+
+    @Override
+    public Integer savePersonActivity(String personId, Integer activityId , Integer areaId) {
+      return   personRepository.savePersonActivity(personId,activityId,areaId);
+    }
+
+    @Override
+    public void deletePersonActivity(@Param("personId") String personId) {
+        personRepository.deletePersonActivity(personId);
+    }
+
+    @Override
+    public void savePersonContacts(String personId, Integer contactTypeId, String contactInfo) {
+        personRepository.savePersonContacts(personId,
+                                            contactTypeId,
+                                            contactInfo);
+    }
+
+    @Override
+    public void savePersonAddress(String personId, Integer addressTypeId, String address) {
+        personRepository.savePersonAddress(personId,addressTypeId,address);
     }
 
 
@@ -99,7 +122,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Persons findById(Object id) {
-         return null ;
+         return personRepository.findById((String)id).get() ;
     }
 
 

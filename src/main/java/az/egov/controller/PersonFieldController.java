@@ -3,6 +3,7 @@ package az.egov.controller;
 import static az.egov.utility.helper.OperationStatus.* ;
 import az.egov.entity.PersonFields;
 import az.egov.entity.Persons;
+import az.egov.entity.Status;
 import az.egov.implementation.PersonFieldsImpl;
 import az.egov.service.PersonFieldService;
 import az.egov.utility.helper.OperationStatus;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by admin on 14.09.2018.
@@ -19,7 +21,7 @@ import java.util.HashMap;
 public class PersonFieldController {
 
    @Autowired
-   private PersonFieldService personFieldService ;
+   PersonFieldService personFieldService ;
 
 
    @GetMapping("/list")
@@ -27,6 +29,7 @@ public class PersonFieldController {
                                       @RequestParam("fetch")  Integer fetch)
    {
       HashMap<String,Object> response  = new HashMap<>() ;
+
       response.put("items",personFieldService.getPersonFieldsList(offset,fetch));
       response.put("totalCount",personFieldService.totalCount()) ;
 
@@ -39,7 +42,22 @@ public class PersonFieldController {
 
       Persons person = new Persons(personID) ;
 
-      return  personFieldService.findByPersonAndStatusId(person,INSERT_STATUS.getStatusId())  ;
+      HashMap<String,Object> response = new HashMap<>() ;
+
+      try {
+
+         List<PersonFields> byPersonAndStatus = personFieldService.findByPersonAndStatus(person, INSERT_STATUS.getStatusId());
+         response.put("items",byPersonAndStatus) ;
+         response.put("sucess",true) ;
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+         response.put("success",false) ;
+      }
+      finally {
+         return response ;
+      }
    }
 
    @GetMapping("/{id}")
@@ -55,7 +73,10 @@ public class PersonFieldController {
 
       try {
          PersonFields personField = personFieldService.findById(id);
-         personField.setStatusId(DELETE_STATUS.getStatusId());
+
+         Status status = new Status(DELETE_STATUS.getStatusId());
+
+         personField.setStatus(status);
          personFieldService.save(personField);
 
          response.put("succes",true) ;
@@ -63,6 +84,7 @@ public class PersonFieldController {
       }
       catch(Exception e)
       {
+         e.printStackTrace();
          response.put("succes",false) ;
       }
 
@@ -73,7 +95,9 @@ public class PersonFieldController {
    private Object savePersonFields(@RequestBody  PersonFields personFields)
    {
 
-      personFields.setStatusId(INSERT_STATUS.getStatusId());
+      Status status = new Status(INSERT_STATUS.getStatusId());
+
+      personFields.setStatus(status);
       HashMap<String,Object> response = new HashMap<>() ;
 
       try
@@ -92,7 +116,10 @@ public class PersonFieldController {
    @PostMapping("/update")
    public Object updatePersonFields(@RequestBody  PersonFields personFields)
    {
-      personFields.setStatusId(UPDATE_STATUS.getStatusId());
+
+      Status  status = new Status(UPDATE_STATUS.getStatusId()) ;
+
+      personFields.setStatus(status);
       HashMap<String,Object> response = new HashMap<>() ;
 
        try

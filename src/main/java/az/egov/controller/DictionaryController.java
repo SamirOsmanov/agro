@@ -1,6 +1,8 @@
 package az.egov.controller;
 
+import az.egov.repository.AddressTypesRepository;
 import az.egov.service.ActivityAreaService;
+import az.egov.service.ContactService;
 import az.egov.service.MembershipTypeService;
 import az.egov.service.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,13 @@ public class DictionaryController {
     ActivityAreaService activityAreaService ;
 
     @Autowired
+    ContactService contactService ;
+
+    @Autowired
     MembershipTypeService memberShipTypeService ;
+
+    @Autowired
+    AddressTypesRepository addressTypesRepository ;
 
 
     @GetMapping("/activity")
@@ -46,6 +54,25 @@ public class DictionaryController {
         }
     }
 
+    @GetMapping("/address")
+    public Object getAdsresses()
+    {
+        HashMap<String,Object> response = new HashMap<>() ;
+        try {
+            response.put("items",addressTypesRepository.findAll()) ;
+            response.put("success",true) ;
+        }
+        catch (Exception e)
+        {
+            response.put("success",false) ;
+        }
+        finally {
+            return response ;
+        }
+    }
+
+
+
     @GetMapping("/membership")
     public Object getMembershipTypesList()
     {
@@ -62,6 +89,25 @@ public class DictionaryController {
             return response ;
         }
     }
+
+
+    @GetMapping("/contact")
+    public Object getContactList()
+    {
+        HashMap<String,Object> response = new HashMap<>() ;
+        try {
+            response.put("items",contactService.findAll()) ;
+            response.put("success",true) ;
+        }
+        catch (Exception e)
+        {
+            response.put("success",false) ;
+        }
+        finally {
+            return response ;
+        }
+    }
+
 
 
     @GetMapping("/positions")

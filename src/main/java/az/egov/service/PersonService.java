@@ -2,6 +2,7 @@ package az.egov.service;
 
 import az.egov.entity.Persons;
 import az.egov.service.common.CRUDService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,4 +26,18 @@ public interface PersonService extends CRUDService<Persons> {
                                           String name,
                                           String surname,
                                           String fathername) ;
+
+    public Integer savePersonActivity( String personId,
+                                       Integer activityId,
+                                       Integer areaId) ;
+
+    public void deletePersonActivity(@Param("personId")   String personId) ;
+
+    public void savePersonContacts(  String personId,
+                                     Integer contactTypeId,
+                                     String  contactInfo) ;
+
+    public void savePersonAddress(  String personId,
+                                    Integer addressTypeId,
+                                    String address) ;
 }

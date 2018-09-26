@@ -1,11 +1,13 @@
 package az.egov.controller;
 
 import az.egov.entity.Notifications;
+import az.egov.service.NotificationService;
 import az.egov.service.NotificationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.HashMap;
 
 /**
@@ -17,19 +19,28 @@ import java.util.HashMap;
 public class NotificationController {
 
 
-    @Autowired
-    NotificationsService notificationsService ;
+   /* @Autowired
+    NotificationsService notificationsService ;*/
 
-    @PostMapping("/save")
+    @Autowired
+    NotificationService notificationService ;
+
+
+    /*@PostMapping("/save")
     public Object saveNotification(@RequestBody Notifications notifications)
     {
        return notificationsService.save(notifications) ;
+    }
+*/
+    @PostMapping("/save")
+    public Object saveNotification2(@RequestBody HashMap<String,Object> request) throws ParseException {
+        return notificationService.saveNotification(request) ;
     }
 
     @GetMapping("/{id}")
     public Object findNotification(@PathVariable("id") BigInteger id)
     {
-        return notificationsService.findById(id) ;
+        return notificationService.findByNotificationId(id) ;
     }
 
     @GetMapping("/list")
@@ -37,8 +48,8 @@ public class NotificationController {
                                          @RequestParam("fetch")  Integer fetch)
     {
         HashMap<String,Object> response = new HashMap<>() ;
-        response.put("items", notificationsService.list(offset,fetch));
-        response.put("totalCount",notificationsService.totalCount()) ;
+        response.put("items", notificationService.list(offset,fetch));
+        response.put("totalCount",notificationService.totalCount()) ;
         return response ;
     }
 
