@@ -20,15 +20,26 @@ public class Notification {
     @Column
     private BigInteger id ;
 
+    @ManyToOne
+    @JoinColumn(name = "area_id")
+    private Areas area ;
+
     @Column
-    private Integer areaId ;
+    private String title ;
+
+    @Column
+    private String message ;
 
     @ManyToOne
     @JoinColumn(name = "notification_priority_id")
     private NotificationPriorities priority ;
 
-    @Column
-    private Integer statusId = 1 ;
+    @OneToMany(mappedBy = "notification")
+    private  List<NotificationsActivityAreas> notificationsActivityAreas ;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status ;
 
     public Notification(BigInteger id) {
         this.id = id ;

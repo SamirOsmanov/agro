@@ -16,7 +16,8 @@ import java.math.BigInteger;
 @Transactional
 public interface NotificationRepository extends JpaRepository<Notification,BigInteger> {
 
-    @Query("select count(n) from Notification as n where n.statusId != 3 ")
+    //@Query("select count(n) from Notification as n where n.status.id != 3 ")
+    @Query("select count(n) from Notification as n ")
     Long totalCount() ;
 
 

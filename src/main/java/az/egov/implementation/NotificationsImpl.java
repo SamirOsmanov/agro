@@ -35,7 +35,7 @@ public class NotificationsImpl implements NotificationsService {
 
     @Override
     public List<Notifications> list(Integer offset, Integer fetch) {
-         return  em.createQuery("from Notifications as n where n.statusId != 3")
+         return  em.createQuery("from Notifications as n") //  where n.status.id != 3
                    .setFirstResult(offset)
                    .setMaxResults(fetch)
                    .getResultList() ;
@@ -44,7 +44,7 @@ public class NotificationsImpl implements NotificationsService {
     @Override
     public Notifications findById(Object id) {
 
-       return (Notifications) em.createQuery("from Notifications as n where n.statusId !=:statusId and id=:id")
+       return (Notifications) em.createQuery("from Notifications as n ") // where n.status.id !=:statusId and id=:id
                   .setParameter("id",id)
                   .setParameter("statusId", OperationStatus.DELETE_STATUS.getStatusId())
                   .getResultList().get(0);

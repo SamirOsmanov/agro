@@ -62,56 +62,70 @@ public class NotificationImpl implements NotificationService {
     }
 
     @Override
-    public Notification saveNotification(HashMap<String, Object> request) throws ParseException {
+    public Notification saveNotification(List< HashMap<String, Object> > list) throws ParseException {
 
-        Integer priority = (Integer)request.get("priority") ;
-        Integer areaId   = (Integer)request.get("areaId") ;
-        List<String>  sendDates  = (List<String>) request.get("sendDates");
-        List<Integer> sendTypes = (List<Integer>) request.get("sendTypes") ;
-        List<Integer> activityAreas = (List<Integer>) request.get("activityId") ;
 
-        NotificationPriorities priorities = new NotificationPriorities(priority) ;
+        for(HashMap<String, Object> request : list) {
 
-        Notification notification = new Notification() ;
-        notification.setPriority(priorities);
-        notification.setAreaId(areaId);
+            Integer priority = (Integer) request.get("priority");
+            Integer areaId = (Integer) request.get("areaId");
+            String title = (String) request.get("title");
+            String message = (String) request.get("message");
 
-        Notification savedNotification = notificationRepository.save(notification);
+            List<String> sendDates = (List<String>) request.get("sendDates");
+            List<Integer> sendTypes = (List<Integer>) request.get("sendTypes");
+            List<Integer> activityAreas = (List<Integer>) request.get("activityId");
 
-        // *****************************************
+            NotificationPriorities priorities = new NotificationPriorities(priority);
 
-        if(sendTypes != null) {
+            Notification notification = new Notification();
+            notification.setPriority(priorities);
+            notification.setTitle(title);
+            notification.setMessage(message);
 
-            int index = 0 ;
-            for(Integer sendType : sendTypes) {
+            Areas area = new Areas(areaId) ;
+            //notification.setStatus(new Status(1));
+            notification.setArea(area);
+
+            Notification savedNotification = notificationRepository.save(notification);
+
+            // *****************************************
+
+            if (sendTypes != null) {
+
+                int index = 0;
+                for (Integer sendType : sendTypes) {
 
 
               /*  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = formatter.parse(sendDates.get(index));*/
 
-                NotificationDetails notificationDetails = new NotificationDetails();
-                notificationDetails.setNotification(savedNotification);
-                notificationDetails.setSentDate(new Date()) ;
-                NotificationSentTypes notificationSentType = new NotificationSentTypes(sendType);
-                notificationDetails.setSentTypes(notificationSentType);
+                    NotificationDetails notificationDetails = new NotificationDetails();
+                    notificationDetails.setNotification(savedNotification);
+                    notificationDetails.setSentDate(new Date());
+                    NotificationSentTypes notificationSentType = new NotificationSentTypes(sendType);
+                    notificationDetails.setSentTypes(notificationSentType);
 
-                detailsRepository.save(notificationDetails);
-                index++ ;
+                    detailsRepository.save(notificationDetails);
+                    index++;
+                }
             }
-        }
 
-        // *****************************************
-
+            // *****************************************
 
 
-        if(activityAreas != null) {
+            if (activityAreas != null) {
 
-            for(Integer activityId : activityAreas) {
-                NotificationsActivityAreas notificationActivity = new NotificationsActivityAreas();
-                notificationActivity.setNotification(notification);
-                notificationActivity.setActivityAreaId(activityId);
+                for (Integer activityId : activityAreas) {
+                    NotificationsActivityAreas notificationActivity = new NotificationsActivityAreas();
+                    notificationActivity.setNotification(notification);
 
-                activityAreasRepository.save(notificationActivity);
+                    ActivityAreas activityArea = new ActivityAreas(activityId) ;
+
+                    notificationActivity.setActivityAreaId(activityArea);
+
+                    activityAreasRepository.save(notificationActivity);
+                }
             }
         }
 

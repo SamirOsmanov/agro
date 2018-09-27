@@ -6,6 +6,7 @@ import az.egov.service.common.CRUDService;
 
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by admin on 26.09.2018.
@@ -13,7 +14,7 @@ import java.util.HashMap;
 
 public interface NotificationService extends CRUDService<Notification> {
 
-    Notification saveNotification(HashMap<String,Object> request) throws ParseException;
+    Notification saveNotification(List<HashMap<String,Object>> request) throws ParseException;
 
     public Long totalCount() ;
 

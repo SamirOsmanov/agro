@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by admin on 10.09.2018.
@@ -33,8 +34,22 @@ public class NotificationController {
     }
 */
     @PostMapping("/save")
-    public Object saveNotification2(@RequestBody HashMap<String,Object> request) throws ParseException {
-        return notificationService.saveNotification(request) ;
+    public Object saveNotification(@RequestBody List< HashMap<String,Object> > request) throws ParseException {
+        HashMap<String,Object> response = new HashMap<>() ;
+
+        try
+        {
+            notificationService.saveNotification(request) ;
+            response.put("success",true) ;
+        }
+        catch (Exception e)
+        {
+            response.put("success",false) ;
+        }
+        finally {
+            return response ;
+        }
+
     }
 
     @GetMapping("/{id}")

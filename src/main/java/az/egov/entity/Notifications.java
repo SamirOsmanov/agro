@@ -7,8 +7,8 @@ import java.math.BigInteger;
  * Created by admin on 10.09.2018.
  */
 
-@Entity
-@Table(name = "notifications" , schema = "Rel")
+//@Entity
+//@Table(name = "notification" , schema = "Rel")
 public class Notifications {
 
     @Id

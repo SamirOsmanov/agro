@@ -1,5 +1,6 @@
 package az.egov.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,8 +20,10 @@ public class NotificationsActivityAreas {
 
     @ManyToOne
     @JoinColumn(name = "notification_id")
+    @JsonIgnore
     private Notification notification ;
 
-    @Column
-    private Integer activityAreaId ;
+    @ManyToOne
+    @JoinColumn(name = "activity_area_id")
+    private ActivityAreas activityAreaId ;
 }
