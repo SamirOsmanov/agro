@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import static az.egov.utility.helper.OperationStatus.INSERT_STATUS;
+
 /**
  * Created by admin on 12.09.2018.
  */
@@ -128,7 +130,7 @@ public class UserController {
                 UserSession newSession = new UserSession();
 
                 newSession.setIp(clientIP);
-                newSession.setStatusId(OperationStatus.INSERT_STATUS.getStatusId());
+                newSession.setStatusId(INSERT_STATUS.getStatusId());
                 newSession.setLastActivity(lastActivity);
                 newSession.setSessionId(sessionID);
                 newSession.setUserAgent(userAgent);
@@ -459,6 +461,120 @@ public class UserController {
         finally {
             return response ;
         }
+    }
+
+
+    @PostMapping("/changepass")
+    public Object changePass(@RequestHeader(value = "SID") String sid, @RequestHeader(value = "passCurrent") String passCurrent,
+                             @RequestHeader(value = "newPass") String newPass){
+        HashMap<String,Boolean> response = new HashMap<>() ;
+        Boolean isPassCorrect=false;
+        try {
+            UserSession userSession = userSessionService.findBySessionIdAndStatusId(sid, INSERT_STATUS.getStatusId());
+            //System.out.println(userService.find(userSession.getUser().getUserName(),security.encrypt(passCurrent)));
+            Users userInfo = userService.find(userSession.getUser().getUserName(),security.encrypt(passCurrent));
+            if (userInfo != null) {
+                isPassCorrect = true;
+                userInfo.setPassword(security.encrypt(newPass));
+                userService.save(userInfo);
+                response.put("success", isPassCorrect);
+
+            } else {
+                response.put("success", isPassCorrect);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            response.put("success",isPassCorrect) ;
+        }
+        finally {
+            return response ;
+        }
+
+
+    }
+
+    @PostMapping("/forgotpassword/step1")
+    public Object forgotPasswordStepFirst(@RequestHeader(value = "pin") String pin,@RequestHeader(value = "phone") String phone){
+        HashMap<String,Boolean> response = new HashMap<>() ;
+        boolean result =false;
+        try {
+
+            Persons byPin = personService.findByPin(pin);
+            System.out.println(byPin.toString());
+            Users userInfo = userService.findByPerson(byPin);
+
+            if (byPin != null && userInfo.getUserName().equals(phone)) {
+                result = true;
+                sendSms(phone);
+            } else {
+                response.put("success", result);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            response.put("success",result) ;
+        }
+        finally {
+            return result ;
+        }
+
+    }
+    @PostMapping("/forgotpassword/step2")
+    public Object forgotPasswordStepSecond(@RequestHeader(value = "phone") String phone){
+        HashMap<String,Boolean> response = new HashMap<>() ;
+        boolean result =false;
+        try {
+            List<Sms> smsVerify = smsService.findByPhoneOrderByCreateDateDesc(phone);
+            System.out.println("sms verify:\t" + smsVerify.get(0).getIsVerified().intValue());
+            if (smsVerify.get(0).getIsVerified().intValue() == 1 ) {
+                result = true;
+            }
+            else{
+                response.put("success",result) ;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            response.put("success",false) ;
+        }
+        finally {
+            return result ;
+        }
+
+    }
+    @PostMapping("/forgotpassword/step3")
+    public Object forgotPasswordStepThird(@RequestHeader(value = "pin") String pin,
+                                          @RequestHeader(value = "password") String password,
+                                          @RequestHeader(value = "confirmPassword") String confirmPassword){
+        HashMap<String,Boolean> response = new HashMap<>() ;
+        boolean result =false;
+        Persons byPin = personService.findByPin(pin);
+        Users userInfo = userService.findByPerson(byPin);
+        System.out.println("ps: " + password + " " + confirmPassword + "\n" + userInfo.toString());
+
+        try {
+            List<Sms> smsVerify = smsService.findByPhoneOrderByCreateDateDesc(userInfo.getUserName());
+            if (password.equals(confirmPassword) && smsVerify.get(0).getIsVerified().intValue() == 1) {
+                result = true;
+                userInfo.setPassword(security.encrypt(confirmPassword));
+                userService.save(userInfo);
+
+            }
+            else {
+                response.put("success",result) ;
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            response.put("success",false) ;
+        }
+        finally {
+            return result ;
+        }
+
     }
 
 }

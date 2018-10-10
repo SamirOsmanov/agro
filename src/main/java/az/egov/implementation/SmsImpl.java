@@ -29,4 +29,9 @@ public class SmsImpl implements SmsService {
         return smsRepository.findByPhoneAndIsVerifiedOrderByCreateDateDesc(phone,
                                                                            isVerified);
     }
+
+    @Override
+    public List<Sms> findByPhoneOrderByCreateDateDesc(String phone) {
+        return smsRepository.findByPhoneOrderByCreateDateDesc(phone);
+    }
 }

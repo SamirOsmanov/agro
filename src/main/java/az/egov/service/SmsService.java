@@ -14,4 +14,6 @@ public interface SmsService extends CRUDService<Sms> {
 
     List<Sms> findByPhoneAndIsVerifiedOrderByCreateDateDesc(String phone,Integer isVerified) ;
 
+    List<Sms> findByPhoneOrderByCreateDateDesc(String phone) ;
+
 }

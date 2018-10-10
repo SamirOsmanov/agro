@@ -15,4 +15,6 @@ import java.util.List;
 public interface SmsRepository extends JpaRepository<Sms,Integer> {
 
     List<Sms> findByPhoneAndIsVerifiedOrderByCreateDateDesc(String phone, Integer isVerified) ;
+
+    List<Sms> findByPhoneOrderByCreateDateDesc(String phone) ;
 }
